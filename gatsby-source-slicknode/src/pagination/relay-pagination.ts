@@ -1,5 +1,5 @@
 import {IPaginationAdapter} from 'gatsby-graphql-source-toolkit/dist/config/pagination-adapters';
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 25;
 
 export interface IRelayPage {
   edges: { cursor: string; node: object | null }[]

@@ -3,12 +3,7 @@
  *
  * See: https://www.gatsbyjs.com/docs/node-apis/
  */
-import {GatsbyNode, PluginOptionsSchemaArgs} from 'gatsby';
-import {pluginOptionsSchema} from './hooks/plugin-options-schema';
-
-const GatsbySourceSlicknode: GatsbyNode = {
-  pluginOptionsSchema,
-}
-exports.pluginOptionsSchema = require('./hooks/plugin-options-schema').pluginOptionsSchema;
-exports.onPreInit = require('./hooks/on-pre-init').onPreInit;
-exports.sourceNodes = require('./hooks/source-nodes').sourceNodes;
+// import {GatsbyNode, PluginOptionsSchemaArgs} from 'gatsby';
+export {pluginOptionsSchema} from './hooks/plugin-options-schema';
+export {onPreInit} from './hooks/on-pre-init';
+export {sourceNodes} from './hooks/source-nodes';

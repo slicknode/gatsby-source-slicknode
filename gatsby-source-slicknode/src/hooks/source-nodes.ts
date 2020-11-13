@@ -1,6 +1,7 @@
 import {PluginOptions, SourceNodesArgs} from 'gatsby';
 import {assertInterfaceType, GraphQLObjectType} from 'graphql';
 import {RelayPagination} from '../pagination/relay-pagination';
+import fetch, { RequestInit as FetchOptions } from 'node-fetch';
 
 import {
   createDefaultQueryExecutor,
@@ -9,8 +10,12 @@ import {
   compileNodeQueries,
   buildNodeDefinitions,
   createSchemaCustomization,
-  sourceAllNodes,
+  sourceAllNodes, createNetworkQueryExecutor,
 } from 'gatsby-graphql-source-toolkit';
+import {generateFragments} from '../generate-fragments';
+import {IQueryExecutionArgs, IQueryExecutor} from 'gatsby-graphql-source-toolkit/dist/types';
+import {createExecutor} from '../query-executor';
+
 
 function getRootListField(type: GraphQLObjectType) {
   const typeName = type.name;
@@ -25,7 +30,9 @@ function getRootListField(type: GraphQLObjectType) {
 const IGNORED_TYPES = [
   'ContentNode',
   'File',
-  'Image',
+  'Login',
+  'RefreshToken',
+  'User',
 ];
 
 async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: PluginOptions) {
@@ -40,9 +47,12 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
   }
 
   // Step1. Set up remote schema:
-  const execute = createDefaultQueryExecutor(String(endpoint), {
-    headers: {
-      'x-slicknode-preview': preview ? '1' : '0',
+  const execute = createExecutor({
+    endpoint: String(endpoint),
+    fetchOptions: {
+      headers: {
+        'x-slicknode-preview': preview ? '1' : '0',
+      },
     },
   });
   const schema = await loadSchema(execute);
@@ -62,8 +72,12 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
   const gatsbyNodeTypes = types.map((type) => ({
     remoteTypeName: type.name,
     queries: `
-      query LIST_${type.name.toUpperCase()}($first: Int, $after: String) {
+      query LIST_${type.name}($first: Int, $after: String) {
         ${getRootListField(type)}(first: $first, after: $after){
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
           edges {
             cursor
             node {
@@ -76,17 +90,20 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
     `,
   }));
 
-  console.log('Types', gatsbyNodeTypes);
   // Step3. Provide (or generate) fragments with fields to be fetched
-  const fragments = generateDefaultFragments({ schema, gatsbyNodeTypes });
-  console.log('Fragments', fragments);
+  const fragments = generateFragments({
+    schema,
+    gatsbyNodeTypes,
+    options: {},
+  });
 
   // Step4. Compile sourcing queries
   const documents = compileNodeQueries({
     schema,
     gatsbyNodeTypes,
     customFragments: fragments,
-  })
+  });
+  console.log('Documents', documents);
 
   return {
     gatsbyApi,
@@ -95,7 +112,7 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
     paginationAdapters: [
       RelayPagination,
     ],
-    gatsbyTypePrefix: `Example`,
+    gatsbyTypePrefix: String(typePrefix),
     gatsbyNodeDefs: buildNodeDefinitions({ gatsbyNodeTypes, documents }),
   }
 }
@@ -107,5 +124,8 @@ export async function sourceNodes(gatsbyApi: SourceNodesArgs, options: PluginOpt
   await createSchemaCustomization(config);
 
   // Step6. Source nodes
-  await sourceAllNodes(config);
+  gatsbyApi.reporter.log('Start sourcing nodes');
+  const nodes = await sourceAllNodes(config);
+  console.log(nodes);
+  gatsbyApi.reporter.log('End sourcing nodes');
 }
