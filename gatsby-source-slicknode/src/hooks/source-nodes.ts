@@ -1,6 +1,6 @@
 import {PluginOptions, SourceNodesArgs} from 'gatsby';
 import {assertInterfaceType, GraphQLObjectType} from 'graphql';
-import {RelayPagination} from './pagination/relay-pagination';
+import {RelayPagination} from '../pagination/relay-pagination';
 
 import {
   createDefaultQueryExecutor,
