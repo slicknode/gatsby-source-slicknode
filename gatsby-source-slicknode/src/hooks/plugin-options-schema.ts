@@ -1,6 +1,6 @@
-import {PluginOptionsSchemaArgs} from 'gatsby';
+import {GatsbyNode} from 'gatsby';
 
-export function pluginOptionsSchema({Joi}: PluginOptionsSchemaArgs) {
+export const pluginOptionsSchema: GatsbyNode['pluginOptionsSchema'] = ({Joi}) => {
   return Joi.object({
     // The Slicknode GraphQL API endpoint
     endpoint: Joi.string()
@@ -15,5 +15,9 @@ export function pluginOptionsSchema({Joi}: PluginOptionsSchemaArgs) {
     preview: Joi.boolean()
       .default(false)
       .description('Load content from the API in preview state'),
+
+    fragmentsPath: Joi.string()
+      .default('slicknode-fragments')
+      .description('Path to the directory where Slicknode source plugin stores fragments'),
   });
 }

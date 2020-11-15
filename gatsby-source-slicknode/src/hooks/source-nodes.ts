@@ -1,21 +1,17 @@
-import {PluginOptions, SourceNodesArgs} from 'gatsby';
+import {GatsbyNode, PluginOptions, SourceNodesArgs} from 'gatsby';
 import {assertInterfaceType, GraphQLObjectType} from 'graphql';
 import {RelayPagination} from '../pagination/relay-pagination';
-import fetch, { RequestInit as FetchOptions } from 'node-fetch';
+import path from 'path';
 
 import {
-  createDefaultQueryExecutor,
   loadSchema,
-  generateDefaultFragments,
   compileNodeQueries,
   buildNodeDefinitions,
   createSchemaCustomization,
-  sourceAllNodes, createNetworkQueryExecutor,
+  sourceAllNodes,
 } from 'gatsby-graphql-source-toolkit';
-import {generateFragments} from '../generate-fragments';
-import {IQueryExecutionArgs, IQueryExecutor} from 'gatsby-graphql-source-toolkit/dist/types';
 import {createExecutor} from '../query-executor';
-
+import {readOrGenerateFragments} from '../read-or-generate-fragments';
 
 function getRootListField(type: GraphQLObjectType) {
   const typeName = type.name;
@@ -29,6 +25,7 @@ function getRootListField(type: GraphQLObjectType) {
 
 const IGNORED_TYPES = [
   'ContentNode',
+  'ContentStatus',
   'File',
   'Login',
   'RefreshToken',
@@ -40,6 +37,7 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
     preview,
     endpoint,
     typePrefix,
+    fragmentsPath,
   } = pluginOptions;
 
   if (!endpoint) {
@@ -91,7 +89,8 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
   }));
 
   // Step3. Provide (or generate) fragments with fields to be fetched
-  const fragments = generateFragments({
+  const fragmentsDir = path.resolve(String(fragmentsPath));
+  const fragments = await readOrGenerateFragments(fragmentsDir, {
     schema,
     gatsbyNodeTypes,
     options: {},
@@ -103,7 +102,6 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
     gatsbyNodeTypes,
     customFragments: fragments,
   });
-  console.log('Documents', documents);
 
   return {
     gatsbyApi,
@@ -117,7 +115,7 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
   }
 }
 
-export async function sourceNodes(gatsbyApi: SourceNodesArgs, options: PluginOptions) {
+export const sourceNodes: GatsbyNode['sourceNodes'] = async (gatsbyApi: SourceNodesArgs, options: PluginOptions) => {
   const config = await createSourcingConfig(gatsbyApi, options);
 
   // Step5. Add explicit types to gatsby schema
@@ -125,7 +123,6 @@ export async function sourceNodes(gatsbyApi: SourceNodesArgs, options: PluginOpt
 
   // Step6. Source nodes
   gatsbyApi.reporter.log('Start sourcing nodes');
-  const nodes = await sourceAllNodes(config);
-  console.log(nodes);
+  await sourceAllNodes(config);
   gatsbyApi.reporter.log('End sourcing nodes');
 }

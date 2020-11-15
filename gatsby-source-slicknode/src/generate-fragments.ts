@@ -13,7 +13,7 @@ interface IGenerateFragmentsOptions {
 
 }
 
-interface IGenerateFragmentsParams {
+export interface IGenerateFragmentsParams {
   schema: GraphQLSchema;
   gatsbyNodeTypes: IGatsbyNodeType[],
   options: IGenerateFragmentsOptions,
@@ -117,8 +117,13 @@ const IgnoreTypeFilter = (types: string[]): FieldFilter => (field) => {
   return !types.includes(getNamedType(field.type).name);
 };
 
+const IgnoreFieldFilter = (fields: string[]): FieldFilter => (field) => {
+  return !fields.includes(field.name);
+};
+
 const DEFAULT_FILTERS = [
   ConnectionFieldFilter,
   VersionsFieldFilter,
-  IgnoreTypeFilter(['User']),
+  IgnoreTypeFilter(['User', 'ContentStatus']),
+  IgnoreFieldFilter(['id'])
 ];
