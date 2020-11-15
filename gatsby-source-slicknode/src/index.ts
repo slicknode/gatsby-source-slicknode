@@ -7,3 +7,5 @@
 export {pluginOptionsSchema} from './hooks/plugin-options-schema';
 export {onPreInit} from './hooks/on-pre-init';
 export {sourceNodes} from './hooks/source-nodes';
+export {onCreateNode} from './hooks/on-create-node';
+export {createSchemaCustomization} from './hooks/create-schema-customization';

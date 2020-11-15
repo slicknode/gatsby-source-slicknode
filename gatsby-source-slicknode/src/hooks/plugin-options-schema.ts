@@ -9,7 +9,7 @@ export const pluginOptionsSchema: GatsbyNode['pluginOptionsSchema'] = ({Joi}) =>
 
     typePrefix: Joi.string()
       .description('The type prefix to prepend to GraphQL types')
-      .default('Slicknode'),
+      .default('Slicknode_'),
 
     // If true, data will be loaded in preview mode
     preview: Joi.boolean()
@@ -19,5 +19,9 @@ export const pluginOptionsSchema: GatsbyNode['pluginOptionsSchema'] = ({Joi}) =>
     fragmentsPath: Joi.string()
       .default('slicknode-fragments')
       .description('Path to the directory where Slicknode source plugin stores fragments'),
+
+    downloadImages: Joi.boolean()
+      .default(true)
+      .description('Download images to local file system and create file node (for gatsby-image etc.)'),
   });
 }

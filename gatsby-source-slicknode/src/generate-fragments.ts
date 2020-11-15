@@ -79,7 +79,7 @@ function generateSelectionSetForField({field, schema, options}: {
   } else if (isObjectType(fieldType)) {
     // Check if is node, add reference instead of full fragment
     if (isNode(fieldType)) {
-      return `${field.name} { remoteTypeName: __typename remoteId: id }`;
+      return `${field.name} { id remoteTypeName: __typename remoteId: id }`;
     } else {
       return `${field.name} { ${generateSelectionSetForType({schema, type: fieldType, options})} }`;
     }
@@ -87,7 +87,7 @@ function generateSelectionSetForField({field, schema, options}: {
     const possibleTypes = schema.getPossibleTypes(fieldType);
     return `${field.name} {${possibleTypes.map(t => {
       if (isNode(t)) {
-        return `...on ${t.name} { remoteTypeName: __typename remoteId: id }`;
+        return `...on ${t.name} { id __typename remoteTypeName: __typename remoteId: id }`;
       } else {
         return `...on ${t.name} { ${generateSelectionSetForType({type: t, schema, options})} }`;
       }
@@ -125,5 +125,5 @@ const DEFAULT_FILTERS = [
   ConnectionFieldFilter,
   VersionsFieldFilter,
   IgnoreTypeFilter(['User', 'ContentStatus']),
-  IgnoreFieldFilter(['id'])
+  // IgnoreFieldFilter(['id'])
 ];

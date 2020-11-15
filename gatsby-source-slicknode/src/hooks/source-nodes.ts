@@ -90,7 +90,7 @@ async function createSourcingConfig(gatsbyApi: SourceNodesArgs, pluginOptions: P
 
   // Step3. Provide (or generate) fragments with fields to be fetched
   const fragmentsDir = path.resolve(String(fragmentsPath));
-  const fragments = await readOrGenerateFragments(fragmentsDir, {
+  let fragments = await readOrGenerateFragments(fragmentsDir, {
     schema,
     gatsbyNodeTypes,
     options: {},
