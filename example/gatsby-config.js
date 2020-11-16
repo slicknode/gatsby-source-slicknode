@@ -13,6 +13,8 @@ module.exports = {
         endpoint: 'https://api.us-east-1.aws.slicknode.com/v1/graphql-texas-demo-bf6cce61',
         downloadImages: true,
       },
-    }
+    },
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`,
   ],
 }

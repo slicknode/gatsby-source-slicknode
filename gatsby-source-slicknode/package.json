@@ -6,8 +6,17 @@
   "author": "Slicknode LLC",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
     "watch": "tsc --watch"
   },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "slicknode",
+    "cms",
+    "headless",
+    "gatsby-source-plugin"
+  ],
   "dependencies": {
     "fs-extra": "^9.0.1",
     "gatsby-graphql-source-toolkit": "^0.6.3",
