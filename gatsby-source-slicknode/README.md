@@ -70,7 +70,7 @@ module.exports = {
 ## Usage
 
 For each content type the root query fields will be added to the Gatsby GraphQL schema.
-Check out the GraphiQL playground for query capabilities: [https://localhost/___graphql](https://localhost/___graphql)
+Check out the GraphiQL playground for query capabilities: [https://localhost:8000/___graphql](https://localhost:8000/___graphql)
 
 ## Image Transforms
 
