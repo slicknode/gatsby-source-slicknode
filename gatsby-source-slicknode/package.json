@@ -14,6 +14,7 @@
     "gatsby-plugin",
     "slicknode",
     "cms",
+    "graphql",
     "headless",
     "gatsby-source-plugin"
   ],
