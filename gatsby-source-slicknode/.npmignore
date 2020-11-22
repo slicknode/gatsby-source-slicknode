@@ -1,3 +1,5 @@
 src
 tsconfig.json
 yarn-error.log
+
+*.tgz
