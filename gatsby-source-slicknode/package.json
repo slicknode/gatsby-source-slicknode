@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "prepack": "npm run build && cp README.md package.json ./dist"
+    "prepack": "npm run build"
   },
   "keywords": [
     "gatsby",
@@ -34,7 +34,9 @@
     "lib": "./dist"
   },
   "files": [
-    "dist",
+    "gatsby-node.js",
+    "**/*.js",
+    "**/*.d.ts",
     "README.md",
     "LICENSE"
   ],
