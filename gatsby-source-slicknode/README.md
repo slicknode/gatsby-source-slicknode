@@ -15,6 +15,9 @@ other Gatsby plugins.
 
 **Links:**
 
+-   [Website](https://slicknode.com/)
+-   [Docs](https://slicknode.com/docs/)
+-   [Slack Channel](https://slicknode.com/slack/)
 -   [Getting started with Slicknode](https://slicknode.com/docs/quickstart/)
 -   [Why Slicknode?](https://slicknode.com/product/developers/)
 
@@ -32,6 +35,7 @@ Add the source plugin to the `gatsby-config.js` file of your project and customi
 
 
 ```javascript
+// In your gatsby-config.js
 module.exports = {
   plugins: [
     {
@@ -67,10 +71,25 @@ module.exports = {
 };
 ```
 
+
 ## Usage
 
 For each content type the root query fields will be added to the Gatsby GraphQL schema.
 Check out the GraphiQL playground for query capabilities: [https://localhost:8000/___graphql](https://localhost:8000/___graphql)
+
+
+## Customizing Fragments
+
+The `gatsby-source-slicknode` plugin generates fragments for each custom type in your Slicknode schema
+that implements the `Node` interface. The entire object is then sourced into Gatsby
+according to the specified fragment. 
+The source plugin creates files for each fragment
+in the directory specified in the config option `fragmentPath` (default to `./slicknode-fragments`).
+
+You can customize the fragments in the directory to load additional data like
+many-to-many relations that are not included by default, or you can remove fields
+if you don't want to include certain fields in your Gatsby schema.  
+
 
 ## Image Transforms
 
@@ -78,11 +97,12 @@ To use the images with the [gatsby-image](https://www.gatsbyjs.com/plugins/gatsb
 install the required plugins and add them to your configuration:
 
 ```javascript
+// In your gatsby-config.js
 module.exports = {
   /* Your site config here */
   plugins: [
     {
-      resolve: "gatsby-source-slicknode",
+      resolve: 'gatsby-source-slicknode',
       options: {
         endpoint: 'https://<your-slicknode-endpoint>',
         
@@ -96,7 +116,7 @@ module.exports = {
 }
 ```
 
-Afterwards you can use the image fragments to generate optimized images for assets loaded
+Then use the image fragments of the image sharp plugin to generate optimized images for assets loaded
 from the Slicknode API, for example:
 
 ```graphql
@@ -116,5 +136,36 @@ query GetBlogPostsQuery {
       }
     }
   }
+}
+```
+
+## Sourcing Multiple Slicknode APIs
+
+To source data from multiple Slicknode APIs, add the configuration for both endpoints
+and choose differnet `fragmentsPath` and `typePrefix` settings for each API, 
+for example:
+
+```javascript
+// In your gatsby-config.js
+module.exports = {
+  plugins: [
+    {
+      resolve: 'gatsby-source-slicknode',
+      options: {
+        endpoint: 'https://<your-primary-slicknode-endpoint>',
+        fragmentsPath: 'slicknode-fragments-primary',
+        typePrefix: 'SlicknodePrimary_'
+      },
+    },
+    {
+      resolve: 'gatsby-source-slicknode',
+      options: {
+        endpoint: 'https://<your-secondary-slicknode-endpoint>',
+        fragmentsPath: 'slicknode-fragments-secondary',
+        typePrefix: 'SlicknodeSecondary_'
+      },
+    },
+    // ...
+  ],
 }
 ```
