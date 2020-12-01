@@ -14,11 +14,12 @@ export function createExecutor(params: IExecutorParams): IQueryExecutor {
 
     const response = await fetch(params.endpoint, {
       method: 'POST',
+      ...params.fetchOptions,
       headers: {
+        ...(params?.fetchOptions?.headers || {}),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ query, variables, operationName }),
-      ...params.fetchOptions,
     });
     if ([429].includes(response.status)) {
       throw new Error('Too many requests');
