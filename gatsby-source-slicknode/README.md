@@ -90,6 +90,9 @@ You can customize the fragments in the directory to load additional data like
 many-to-many relations that are not included by default, or you can remove fields
 if you don't want to include certain fields in your Gatsby schema.  
 
+**Note:** When you make changes to existing types in your Slicknode API, you have to update already generated 
+fragments to also apply the changes to the Gatsby GraphQL API
+
 
 ## Image Transforms
 
