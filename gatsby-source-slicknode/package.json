@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-slicknode",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Gatsby source plugin for Slicknode Headless GraphQL CMS",
   "main": "index.js",
   "author": "Slicknode LLC",
