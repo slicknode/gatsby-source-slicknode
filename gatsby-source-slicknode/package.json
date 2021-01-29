@@ -37,6 +37,6 @@
   },
   "peerDependencies": {
     "gatsby": "^2.26.0",
-    "graphql": "^15.4.0"
+    "graphql": "^14.0.2 || ^15.4.0"
   }
 }
